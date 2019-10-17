@@ -1,0 +1,126 @@
+---
+title: "BookStore Information"
+Author: "Adam Gonzalez"
+output: html_document
+---
+
+```{r}
+library(data.table)
+library(tidyverse)
+```
+
+
+Below i am uploading the data tables into two newly created tables so that i can tidy them up and make them more readable for analysis.
+Here i am reading the csv file sales.csv into sales which will then create an excel format like table for us to use, and the same goes for register_info it is creating a table from the csv file register.csv.
+```{r}
+library(readr)
+sales <- read_csv("sales.csv")
+register_info <- read_csv("register.csv")
+```
+
+
+```{r}
+setnames(sales, old=c("category of inventory goods"), new=c("inventory_categories"))
+setnames(sales, old=c("1-2018", "2-2018", "3-2018", "4-2018"), new=c("Jan, 2018", "Feb, 2018", "Mar, 2018", "Apr, 2018"))
+setnames(sales, old=c("5-2018", "6-2018", "7-2018", "8-2018"), new=c("May, 2018", "Jun, 2018", "Jul, 2018", "Aug, 2018"))
+setnames(sales, old=c("9-2018", "10-2018", "11-2018", "12-2018"), new=c("Sept, 2018", "Oct, 2018", "Nov, 2018", "Dec, 2018"))
+setnames(sales, old=c("1-2019", "2-2019", "3-2019", "4-2019"), new=c("Jan, 2019", "Feb, 2019", "Mar, 2019", "Apr, 2019"))
+setnames(sales, old=c("5-2019", "6-2019", "7-2019", "8-2019"), new=c("May, 2019", "Jun, 2019", "Jul, 2019", "Aug, 2019"))
+setnames(sales, old=c("9-2019", "10-2019"), new=c("Sept, 2019", "Oct, 2019"))
+```
+
+Now i will display the sales table to show you that it provides detail of what type of items were sold in thousands of dollars and shows you per month since jan 2018 what items those were. Now if we were to look at those sales and how they look as the months go on we can see which items do the best during certain months and what months do sales do the best overall. This will be able to provide insights on what items are hot during certain times to up sales and increase revenue or what items arent so hot during certain times which will then allow you to see what items you should display more rather than others.
+
+
+```{r}
+head(sales, n = 8)
+```
+
+Here i just change the names of the columns in register_info so that its easier to read and explain. It will also help us map data when its needed if we needed to figure out returns or exchanges.
+
+```{r}
+setnames(register_info, old=c("purchase", "item", "charge", "price"), new=c("purchase_number", "item_number", "type_of_charge", "total_price"))
+setnames(register_info, old=c("is the customer a student/faculty/staff (0) or unaffiliated (1)"), new=c("type_of_customer_1_is_for_work_related_and_0_is_for_general_use"))
+setnames(register_info, old=c("customer id", "receipt", "contact preference"), new=c("member_id", "reciept_number", "reciept_type"))
+setnames(register_info, old=c("newsletter", "sales", "preferred customer discount"), new=c("bookstore_news_updates", "notify_store_prmotions", "qualified_discount"))
+```
+
+Here is cleaning up the data so that all the spots that had -- no data i put N/A since no data is available for certain reciepts. So i cleaned it so that it wasent blank.
+```{r}
+register_info[2:11][register_info[2:11] == "--"] <- "N/A"
+head(register_info)
+```
+
+We have now cleaned up both tables to make sure they are nice which will be able to be read by anybody now which is what we wanted. I will create some graphs so that you can see visually each month what was sold the most each graph is individually for each month that we have data on. So if you were to check out a graph you can that months top seller and lowest seller, and you can compare those to the other graphs which could give you the most frequently sold.
+
+```{r}
+ggplot(sales, aes(x=inventory_categories, y=`Jan, 2018`)) + geom_col(color = "blue") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Feb, 2018`)) + geom_col(color = "green") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Mar, 2018`)) + geom_col(color = "red") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Apr, 2018`)) + geom_col(color = "yellow") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`May, 2018`)) + geom_col(color = "brown") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Jun, 2018`)) + geom_col(color = "purple") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Jul, 2018`)) + geom_col(color = "pink") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Aug, 2018`)) + geom_col(color = "lime green") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Sept, 2018`)) + geom_col(color = "sky blue") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Oct, 2018`)) + geom_col(color = "light blue") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Nov, 2018`)) + geom_col(color = "orange") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Dec, 2018`)) + geom_col(color = "brown") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Jan, 2019`)) + geom_col(color = "blue") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Feb, 2019`)) + geom_col(color = "light green") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Mar, 2019`)) + geom_col(color = "red") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Apr, 2019`)) + geom_col(color = "gainsboro") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`May, 2019`)) + geom_col(color = "cyan") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Jun, 2019`)) + geom_col(color = "lightsalmon") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Jul, 2019`)) + geom_col(color = "seagreen") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Aug, 2019`)) + geom_col(color = "maroon") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Sept, 2019`)) + geom_col(color = "dodgerblue") + coord_flip()
+ggplot(sales, aes(x=inventory_categories, y=`Oct, 2019`)) + geom_col(color = "coral") + coord_flip()
+
+
+```
+Here i put together a couple of graphs which describe how many customers get preferred customer discounts, total price for each transaction, which contact do people prefer, and what type of customers purchase from us. You can check out the graphs and look at the detail.
+```{r}
+ggplot(register_info, aes(x = `qualified_discount`, y=purchase_number)) + geom_col(color = "yellow")
+ggplot(register_info, aes(x = `purchase_number`, y=total_price)) + geom_col(color = "red")
+ggplot(register_info, aes(x = `reciept_type`, y=purchase_number)) + geom_col(color = "blue")
+ggplot(register_info, aes(x =type_of_customer_1_is_for_work_related_and_0_is_for_general_use, y=purchase_number)) + geom_col(color = "cyan")
+```
+Inforamtion for Register_info
+<p>
+purchase - a unique number for each check-out, listed chronologically
+</p>
+<p>
+item - the bar code or product id number for an item being purchased
+</p>
+<p>
+charge - identifies whether the receipt item is the cost of the item or if it is the affiliated tax on that item
+</p>
+<p>
+price - associated cost to the customer for the charge
+</p>
+<p>
+is the customer a student/faculty/staff (0) or unaffiliated (1) - identifies when the customer uses the system with their customer id, which is only available for students, faculty, and staff at the university. Everyone else is treated as unaffiliated
+</p>
+<p>
+customer id - the ID number of the customer when they enter it at purchase
+</p>
+<p>
+receipt - records whether or not the customer requests a receipt for their purchase
+</p>
+<p>
+contact preference - stores the customer's preferred means of contact, including options for: email, mail, fax, and phone
+</p>
+<p>
+newsletter - stores the customer's preference about whether or not they want to receive the bookstore newsletter
+</p>
+<p>
+sales - keeps track of whether or not the customer wants notifications about special sales
+</p>
+<p>
+preferred customer discount - identifies if the customer has qualified for special discounts
+</p>
+
+Summary:
+I have supplied all the data that should help transistion a manager into understand sales, and how to increase them and see what items are best to display since we created graphs that show per month what is sales the most, and what is most popular.
+Also for register_info it shows what each reciept total is, and what each person prefers for contact, and how many customers are preferred customers.
